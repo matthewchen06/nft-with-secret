@@ -1,7 +1,7 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { sepolia } from 'wagmi/chains';
 
-const walletConnectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? '';
+const walletConnectId = 'id';
 
 export const config = getDefaultConfig({
   appName: 'Secret NFT Vault',

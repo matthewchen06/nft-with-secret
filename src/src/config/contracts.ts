@@ -1,6 +1,6 @@
-const configuredAddress = import.meta.env.VITE_SECRET_NFT_ADDRESS as string | undefined;
+const configuredAddress = "0xCA8F8fE4Bf1a2CB091361B9905651dD277664453";
 
-export const CONTRACT_ADDRESS = (configuredAddress ?? '0x0000000000000000000000000000000000000000') as `0x${string}`;
+export const CONTRACT_ADDRESS = (configuredAddress ?? '0xCA8F8fE4Bf1a2CB091361B9905651dD277664453') as `0x${string}`;
 
 export const CONTRACT_ABI = [
   {
