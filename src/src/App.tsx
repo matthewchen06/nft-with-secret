@@ -14,7 +14,7 @@ function App() {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider locale="en">
-          <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
+          <div style={{ minHeight: '100vh' }}>
             <Header />
             <SecretApp />
           </div>
