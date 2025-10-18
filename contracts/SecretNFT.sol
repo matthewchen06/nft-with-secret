@@ -91,6 +91,35 @@ contract SecretNFT is ERC721, Ownable, SepoliaConfig {
         return (data.encryptedNote, data.encryptedController);
     }
 
+    function totalMinted() external view returns (uint256) {
+        return _nextTokenId;
+    }
+
+    function tokensOfOwner(address owner) external view returns (uint256[] memory tokenIds) {
+        if (owner == address(0)) {
+            return new uint256[](0);
+        }
+
+        uint256 balance = balanceOf(owner);
+        tokenIds = new uint256[](balance);
+
+        uint256 found;
+        for (uint256 tokenId = 0; tokenId < _nextTokenId && found < balance; ) {
+            if (_ownerOf(tokenId) == owner) {
+                tokenIds[found] = tokenId;
+                unchecked {
+                    ++found;
+                }
+            }
+
+            unchecked {
+                ++tokenId;
+            }
+        }
+
+        return tokenIds;
+    }
+
     function _update(address to, uint256 tokenId, address auth) internal override returns (address) {
         address previousOwner = super._update(to, tokenId, auth);
 
