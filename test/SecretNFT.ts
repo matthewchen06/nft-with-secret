@@ -110,4 +110,33 @@ describe("SecretNFT", function () {
     const clear = await fhevm.userDecryptEaddress(data[1], contractAddress, signers.bob);
     expect(ethers.getAddress(clear)).to.equal(signers.alice.address);
   });
+
+  it("enumerates tokens for each owner", async function () {
+    const firstCipher = await encryptAddress(signers.alice.address, signers.alice.address);
+    const firstTokenId = await contract
+      .connect(signers.alice)
+      .mint.staticCall(signers.alice.address, "first", firstCipher.handles[0], firstCipher.inputProof);
+    await contract
+      .connect(signers.alice)
+      .mint(signers.alice.address, "first", firstCipher.handles[0], firstCipher.inputProof);
+
+    const secondCipher = await encryptAddress(signers.alice.address, signers.alice.address);
+    const secondTokenId = await contract
+      .connect(signers.alice)
+      .mint.staticCall(signers.alice.address, "second", secondCipher.handles[0], secondCipher.inputProof);
+    await contract
+      .connect(signers.alice)
+      .mint(signers.alice.address, "second", secondCipher.handles[0], secondCipher.inputProof);
+
+    const aliceTokens = await contract.tokensOfOwner(signers.alice.address);
+    expect(aliceTokens).to.deep.equal([firstTokenId, secondTokenId]);
+
+    await contract.connect(signers.alice).transferFrom(signers.alice.address, signers.bob.address, firstTokenId);
+
+    const updatedAliceTokens = await contract.tokensOfOwner(signers.alice.address);
+    expect(updatedAliceTokens).to.deep.equal([secondTokenId]);
+
+    const bobTokens = await contract.tokensOfOwner(signers.bob.address);
+    expect(bobTokens).to.deep.equal([firstTokenId]);
+  });
 });
