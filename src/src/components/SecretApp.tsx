@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAccount, usePublicClient } from 'wagmi';
-import { parseAbiItem } from 'viem';
 import { ethers } from 'ethers';
 
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../config/contracts';
@@ -19,12 +18,6 @@ type SecretToken = {
   decryptedController?: string;
   decryptedNote?: string;
 };
-
-const TRANSFER_EVENT = parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)');
-
-function normaliseAddress(address: string) {
-  return address.toLowerCase();
-}
 
 function deriveKeyBytes(address: string) {
   const checksum = ethers.getAddress(address);
@@ -96,27 +89,17 @@ export function SecretApp() {
     setError(null);
 
     try {
-      const logs = await publicClient.getLogs({
+      const ownedTokenIds = (await publicClient.readContract({
         address: CONTRACT_ADDRESS,
-        event: TRANSFER_EVENT,
-        fromBlock: 0n,
-        toBlock: 'latest',
-      });
+        abi: CONTRACT_ABI,
+        functionName: 'tokensOfOwner',
+        args: [connectedAddress as `0x${string}`],
+      })) as readonly bigint[];
 
-      const ownership = new Map<bigint, string>();
-      for (const log of logs) {
-        const tokenId = log.args.tokenId as bigint;
-        const to = log.args.to as string;
-        ownership.set(tokenId, normaliseAddress(to));
-      }
-
-      const ownedTokenIds = Array.from(ownership.entries())
-        .filter(([, owner]) => owner === normaliseAddress(connectedAddress))
-        .map(([tokenId]) => tokenId)
-        .sort((a, b) => Number(a - b));
+      const sortedTokenIds = Array.from(ownedTokenIds).sort((a, b) => Number(a - b));
 
       const fetchedTokens: SecretToken[] = await Promise.all(
-        ownedTokenIds.map(async (tokenId) => {
+        sortedTokenIds.map(async (tokenId) => {
           const [encryptedNote, encryptedController] = await publicClient.readContract({
             address: CONTRACT_ADDRESS,
             abi: CONTRACT_ABI,
