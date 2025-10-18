@@ -354,7 +354,7 @@ export function SecretApp() {
   );
 
   const selectedToken = useMemo(
-    () => tokens.find((token) => selectedTokenId && token.tokenId === selectedTokenId),
+    () => (selectedTokenId !== null ? tokens.find((token) => token.tokenId === selectedTokenId) : undefined),
     [tokens, selectedTokenId],
   );
 
