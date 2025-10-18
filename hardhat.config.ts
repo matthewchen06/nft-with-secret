@@ -6,6 +6,7 @@ import "@typechain/hardhat";
 import "hardhat-deploy";
 import "hardhat-gas-reporter";
 import type { HardhatUserConfig } from "hardhat/config";
+import { vars } from "hardhat/config";
 import "solidity-coverage";
 import * as dotenv from "dotenv";
 
@@ -18,6 +19,7 @@ import "./tasks/SecretNFT";
 
 const MNEMONIC: string = process.env.MNEMONIC ?? "test test test test test test test test test test test junk";
 const INFURA_API_KEY: string = process.env.INFURA_API_KEY ?? "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
+const PRIVATE_KEY: string | undefined = process.env.PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
@@ -51,11 +53,7 @@ const config: HardhatUserConfig = {
       url: "http://localhost:8545",
     },
     sepolia: {
-      accounts: {
-        mnemonic: MNEMONIC,
-        path: "m/44'/60'/0'/0/",
-        count: 10,
-      },
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined,
       chainId: 11155111,
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
     },
