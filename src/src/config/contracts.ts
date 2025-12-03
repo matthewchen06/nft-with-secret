@@ -1,4 +1,4 @@
-const configuredAddress = "0x913F9aF82F287469B5E1b45A487C71117CCCD73c";
+const configuredAddress = "0x4c86155769a3FaE7343203043c52d1e12032573F";
 
 export const CONTRACT_ADDRESS = configuredAddress as `0x${string}`;
 

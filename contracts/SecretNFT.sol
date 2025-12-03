@@ -4,11 +4,11 @@ pragma solidity ^0.8.24;
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {FHE, eaddress, externalEaddress} from "@fhevm/solidity/lib/FHE.sol";
-import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
+import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title SecretNFT
 /// @notice ERC721 storing encrypted notes and encrypted controller addresses
-contract SecretNFT is ERC721, Ownable, SepoliaConfig {
+contract SecretNFT is ERC721, Ownable, ZamaEthereumConfig {
     struct TokenData {
         string encryptedNote;
         eaddress encryptedController;
